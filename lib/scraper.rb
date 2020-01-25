@@ -22,6 +22,34 @@ class Scraper
   end
 
   def self.scrape_profile_page(profile_url)
+    source_page = Nokogiri::HTML(open(profile_url))
+    profile = {}
+    #Some students don't have a Twitter or some other social link. Be sure to be able to handle that.
+    #     {
+    #   :twitter=>"http://twitter.com/flatironschool",
+    #   :linkedin=>"https://www.linkedin.com/in/flatironschool",
+    #   :github=>"https://github.com/learn-co",
+    #   :blog=>"http://flatironschool.com",
+    #   :profile_quote=>"\"Forget safety. Live where you fear to live. Destroy your reputation. Be notorious.\" - Rumi",
+    #   :bio=> "I'm a school"
+    # }
+    links = source_page.css(".social-icon-container").children.css("a").map { |p_url| p_url.attribute('href').value}
+    links.each do |link|
+      if link.include?("linkedin")
+        profile[:linkedin] = link
+      elsif link.include?("github")
+        profile[:github] = link
+      elsif link.include?("twitter")
+        profile[:twitter] = link
+      else
+        profile[:blog] = link
+      end
+    end
+  
+  profile[:profile_quote] = source_page.css(".profile-quote").text if source_page.css(".profile-quote")
+  profile[:bio] = source_page.css("div.bio-content.content-holder div.description-holder p").text if source_page.css("div.bio-content.content-holder div.description-holder p")
+
+  profile
 
   end
 
