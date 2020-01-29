@@ -21,43 +21,25 @@ class Scraper
     html = open(profile_url)
     doc = Nokogiri::HTML(html)
     x = doc.css('.profile .vitals-container .social-icon-container a')
-    # twitter = x[0].attr('href')
-    # linkedin = x[1].attr('href')
-    # github = x[2].attr('href')
-    # blog = x[3].attr('href')
 
-
-    # hashyhash = {
-    #   :twitter => twitter ? twitter : nil,
-    #   :linkedin => linkedin ? linkedin : nil,
-    #   :github => github ? github : nil,
-    #   :blog => blog ? blog : nil,
-    #   :profile_quote => doc.css('.profile .vitals-text-container .profile-quote').text,
-    #   :bio => doc.css('.profile .details-container .description-holder p').text
-    # }
-
-    hashyhash = {
-    }
-    doc.css('.profile .vitals-container .social-icon-container').each do |y|
-      if y.css('a').attr('href').value.include?('twitter')
-        hashyhash[:twitter] = y.css('a').attr('href').value
-      elsif y.css('a').attr('href').value.include?('linkedin')
-        hashyhash[:linkedin] = y.css('a').attr('href').value 
-      elsif y.css('a').attr('href').value.include?('github')
-        hashyhash[:github] = y.css('a').attr('href').value 
-      elsif y.css('a').attr('href').value.include?('rss')
-        hashyhash[:blog] = y.css('a').attr('href').value
+    hashyhash = {}
+    
+    doc.css('.profile .vitals-container .social-icon-container').children.css('a').map do |y|
+      # binding.pry
+      if y.attr('href').include?('twitter')
+        hashyhash[:twitter] = y.attr('href')
+      elsif y.attr('href').include?('linkedin')
+        hashyhash[:linkedin] = y.attr('href')
+      elsif y.attr('href').include?('github')
+        hashyhash[:github] = y.attr('href')
+      elsif y.attr('href').include?('http')
+        hashyhash[:blog] = y.attr('href')
       end
       # binding.pry
     end 
-pp hashyhash
-    # x.each do |y|
-    #   # puts y.attr('href')
-    #   hashyhash[key] = y.attr('href')
-    #   # binding.pry
-    # end
-    # binding.pry
-    # x.attr('href').value == twitter
+    hashyhash[:profile_quote] = doc.css('.profile .vitals-text-container .profile-quote').text
+    hashyhash[:bio] = doc.css('.profile .details-container .description-holder p').text
+    hashyhash
   end
 
 end
