@@ -14,7 +14,7 @@ class Scraper
     html = open("https://learn-co-curriculum.github.io/student-scraper-test-page/index.html")
     doc = Nokogiri::HTML(html)
     #binding.pry
-    students = []
+    students_array = []
 
     doc.css(".student-card").each do |student|
       id = {}
@@ -24,9 +24,9 @@ class Scraper
         :profile_url => student.css("a").attribute('href').value
         #binding.pry
       }
-      students << id
+      students_array << id
     end
-    students
+    students_array
   end
 
   def self.scrape_profile_page(profile_url)
