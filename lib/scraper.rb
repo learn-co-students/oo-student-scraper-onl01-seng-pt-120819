@@ -25,9 +25,9 @@ class Scraper
     
     page= Nokogiri::HTML(open(profile_url))
     
-    #student=[]
+
     student = {}
-    profile=page.css(".social-icon-container a").collect{|icon| icon.attribute("href").value}
+    profile=page.css(".social-icon-container a").collect {|icon| icon.attribute("href").value}
 
     profile.each do |link|
       
